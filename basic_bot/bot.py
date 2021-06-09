@@ -1,20 +1,20 @@
 import discord
 
-client = discord.Client()
+bot = discord.Client()
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f'Logged in as {client}')
+    print(f'Logged in as {bot}')
 
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
 
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
 if __name__ == "__main__":
-    client.run('your token here')
+    bot.run('your token here')
