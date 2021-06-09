@@ -37,12 +37,12 @@ async def rps(ctx: commands.Context, player_choice: str):
         "s": "scissors"
     }
     player_choice = player_choice.lower()[0]
+    bot_choice = random.choice(list(game_options.keys()))
     if player_choice not in game_options.keys():
         await ctx.send("Invalid option. "
                        "Valid arguments are: "
                        "`(r)ock`, `(p)aper`, `(s)cissors`")
-    bot_choice = random.choice(list(game_options.keys()))
-    if player_choice == bot_choice:
+    elif player_choice == bot_choice:
         await ctx.send(f"Both players chose {player_choice}, it's a Draw !")
     elif (player_choice == "r" and bot_choice == "s")\
         or (player_choice == "p" and bot_choice == "r")\
