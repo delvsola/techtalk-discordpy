@@ -1,1 +1,1 @@
-"# techtalk-discordpy" 
+# Tech Talk - discord.py
