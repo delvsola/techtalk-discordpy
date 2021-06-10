@@ -43,7 +43,8 @@ async def rps(ctx: commands.Context, player_choice: str):
                        "Valid arguments are: "
                        "`(r)ock`, `(p)aper`, `(s)cissors`")
     elif player_choice == bot_choice:
-        await ctx.send(f"Both players chose {player_choice}, it's a Draw !")
+        await ctx.send(f"Both players chose {game_options[player_choice]}, "
+                       f"it's a Draw !")
     elif (player_choice == "r" and bot_choice == "s")\
         or (player_choice == "p" and bot_choice == "r")\
             or (player_choice == "s" and bot_choice == "p"):
