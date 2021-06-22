@@ -1,4 +1,6 @@
+import os
 import discord
+
 
 bot = discord.Client()
 
@@ -17,4 +19,4 @@ async def on_message(message):
         await message.channel.send('Hello!')
 
 if __name__ == "__main__":
-    bot.run('your token here')
+    bot.run(os.getenv("DISCORD_KEY"))

@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+import os
 
 
 bot_prefix = "$"
@@ -56,4 +57,4 @@ async def rps(ctx: commands.Context, player_choice: str):
 
 
 if __name__ == "__main__":
-    bot.run('your token here')
+    bot.run(os.getenv("DISCORD_KEY"))
