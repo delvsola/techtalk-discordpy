@@ -116,4 +116,4 @@ async def rps_embed(ctx: commands.Context):
 
 
 if __name__ == "__main__":
-    bot.run("ODUyMTEyMjU5ODY2MDM0MTg2.YMCFYg.whPC17gV5wguQCVj1of9_UGLNBE")
+    bot.run("YOUR TOKEN HERE")
