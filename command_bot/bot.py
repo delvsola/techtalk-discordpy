@@ -1,14 +1,19 @@
+import asyncio
 import discord
 from discord.ext import commands
 import random
 import os
 
-
 bot_prefix = "$"
 game = discord.Game("with the listeners")
+intents = discord.Intents.default()
+intents.members = True
+intents.typing = False
+intents.presences = False
 bot: commands.Bot = commands.Bot(
     command_prefix=bot_prefix,
-    description="Your friendly tech-talker"
+    description="Your friendly tech-talker",
+    intents=intents
 )
 
 
@@ -31,30 +36,84 @@ async def hello(ctx: commands.Context):
 
 
 @bot.command(name="rps", description="Rock Paper Scissors !")
-async def rps(ctx: commands.Context, player_choice: str):
-    game_options = {
-        "r": "rock",
-        "p": "paper",
-        "s": "scissors"
-    }
-    player_choice = player_choice.lower()[0]
-    bot_choice = random.choice(list(game_options.keys()))
-    if player_choice not in game_options.keys():
-        await ctx.send("Invalid option. "
-                       "Valid arguments are: "
-                       "`(r)ock`, `(p)aper`, `(s)cissors`")
-    elif player_choice == bot_choice:
-        await ctx.send(f"Both players chose {game_options[player_choice]}, "
-                       f"it's a Draw !")
-    elif (player_choice == "r" and bot_choice == "s")\
-        or (player_choice == "p" and bot_choice == "r")\
-            or (player_choice == "s" and bot_choice == "p"):
-        await ctx.send(f"{game_options[player_choice].capitalize()} "
-                       f"wins against {game_options[bot_choice]}, you win!")
+async def rps_embed(ctx: commands.Context):
+    emojis = ["✊", "✋", "✌️"]
+    bot_choice = random.choice(emojis)
+    footer_url = "https://becode.org/app/uploads/2020/03/cropped-becode-logo" \
+                 "-seal.png "
+    em = discord.Embed(
+        title="Rock Paper Scissors",
+        description="Waiting for your move.",
+        color=discord.Colour(0x325b85)
+    )
+    em.set_footer(
+        text=f"{ctx.author.display_name} vs. {bot.user.display_name}",
+        icon_url=footer_url
+    )
+    msg = await ctx.send(embed=em)
+    for emoji in emojis:
+        await msg.add_reaction(emoji)
+
+    def check(reac, usr):
+        return usr == ctx.author and str(reac.emoji) in emojis
+
+    try:
+        reaction, user = await bot.wait_for(
+            'reaction_add',
+            timeout=10,
+            check=check
+        )
+    except asyncio.TimeoutError:
+        em = discord.Embed(
+            title="Rock Paper Scissors",
+            description="Timed out",
+            color=discord.Colour(0xa6262a)
+        )
+        em.set_footer(
+            text=f"{ctx.author.display_name} vs. {bot.user.display_name}",
+            icon_url=footer_url
+        )
+        await msg.edit(embed=em)
     else:
-        await ctx.send(f"{game_options[player_choice].capitalize()} loses "
-                       f"against {game_options[bot_choice]}, you lost. :(")
+        user_choice = str(reaction.emoji)
+        if user_choice == bot_choice:
+            em = discord.Embed(
+                title="Rock Paper Scissors",
+                description=f"Both players chose {bot_choice}\nIt's a draw !",
+                color=discord.Colour(0xff9d00)
+            )
+            em.set_footer(
+                text=f"{ctx.author.display_name} vs. {bot.user.display_name}",
+                icon_url=footer_url
+            )
+            await msg.edit(embed=em)
+        elif (user_choice == "✊" and bot_choice == "✌️") \
+                or (user_choice == "✋" and bot_choice == "✊") \
+                or (user_choice == "✌️" and bot_choice == "✋"):
+            em = discord.Embed(
+                title="Rock Paper Scissors",
+                description=f"{user_choice} is stronger than {bot_choice}\n"
+                            f"You win !",
+                color=discord.Colour(0x00d11c)
+            )
+            em.set_footer(
+                text=f"{ctx.author.display_name} vs. {bot.user.display_name}",
+                icon_url=footer_url
+            )
+            await msg.edit(embed=em)
+        else:
+            em = discord.Embed(
+                title="Rock Paper Scissors",
+                description=f"{user_choice} is weaker than {bot_choice}\n"
+                            f"You lose !",
+                color=discord.Colour(0xa6262a)
+            )
+            em.set_footer(
+                text=f"{ctx.author.display_name} vs. {bot.user.display_name}",
+                icon_url=footer_url
+            )
+            await msg.edit(embed=em)
 
 
 if __name__ == "__main__":
-    bot.run(os.getenv("DISCORD_KEY"))
+    bot.run("ODUyMTEyMjU5ODY2MDM0MTg2.YMCFYg.whPC17gV5wguQCVj1of9_UGLNBE")
